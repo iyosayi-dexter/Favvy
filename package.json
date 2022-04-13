@@ -1,0 +1,29 @@
+{
+  "name": "favvy",
+  "version": "1.0.0",
+  "description": "A desktop app built with electron , used for creating favicon and other meta icons from square image frame",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iyosayi-dexter/Favvy.git"
+  },
+  "keywords": [
+    "javascript",
+    "electron"
+  ],
+  "author": "Iyosayi-dexter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iyosayi-dexter/Favvy/issues"
+  },
+  "homepage": "https://github.com/iyosayi-dexter/Favvy#readme",
+  "devDependencies": {
+    "electron": "^18.0.3"
+  },
+  "dependencies": {
+    "sharp": "^0.30.3"
+  }
+}

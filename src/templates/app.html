@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8' />
+        <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <title>Favvy - favicon exporter</title>
+        <link rel='stylesheet' href='../styles/app.css' />
+    </head>
+    <body>
+        <div class='app_loading_overlay hide' id='overlay'>
+            <div class='app_spinning_icon_wrapper'>
+                some icon
+            </div>
+        </div>
+        <main class='app_wrapper'>
+            <section class='app_widget'>
+                <div class='app_image_to_favvy_container' id='frame-container'>
+                    <label class='app_image_import_label' for='image_file' >Select a square image (at least 512 X 512 recommended)</label>
+                    <input type='file' accept='image/*' id='image_file' class='app_image_import_file'/>
+                </div>
+                <div class='preview-wrapper' id='preview'>
+                    <div class='app_favicon_preview_container'>
+                        <img src='' data-preview-image/>
+                        <img src='' data-preview-image/>
+                        <img src='' data-preview-image/>
+                        <img src='' data-preview-image/>
+                    </div>
+                    <button class='app_favicion_preview_close' onclick='favvyTool.cancelExport()'>Cancel</button>
+                </div>
+            </section>
+            <section class='app_config_wrapper'>
+                <div class='app_input_wrapper'>
+                    <label for='website_name'>Website name</label>
+                    <input type='text' maxlength='255' name='webiste_name' placeholder='eg Metanyx'  id='website_name' />
+                </div>
+                <div class='app_input_wrapper'>
+                    <label for='theme_color'>Theme color</label>
+                    <input type='text' maxlength='255' placeholder='eg #ffffff' name='theme_color'  id='theme_color' />
+                </div>
+                <div class='app_input_wrapper'>
+                    <label for='directory'>Output Path</label>
+                    <label for='directory' id="path_value" class="app_directory_value">None selected...</label>
+                    <input type='file' id='directory' webkitdirectory hidden>
+                </div>
+                <div class='app_input_wrapper flex_row'>
+                    <input type='checkbox' id='is_gzip'>
+                    <p>Export as Gzip ?</p>
+                </div>
+                <button id='export_btn'>Export favicons</button>
+            </section>
+        </main>
+        <script>
+            /*
+                Selecting dom elements
+                    these doms elements are the config of favyy icon exporer
+            */
+
+            const websiteNameEl = document.querySelector('#website_name')
+            const themeColorEl = document.querySelector('#theme_color')
+            const isGzipEl = document.querySelector('#is_gzip')
+            const btnEl = document.querySelector('#export_btn')
+            const imageFileEl = document.querySelector('#image_file')
+            const previewImageEl = document.querySelector('#preview')
+            const frameEl = document.querySelector('#frame-container')
+            const directoryEl = document.querySelector('#directory')
+
+            class Favvy{
+                constructor(){
+                    this.imageObject={}
+                    this.outputPath = null
+                }
+
+                async setImage (path){
+                    const resolution = await window.imageMetaDataAPI(path)
+                    this.imageObject = {
+                        src: path,
+                        resolution
+                    }
+                    this.checkImage()
+                }
+
+                async exportFavicon(isGzip=false){
+                    ( typeof(isGzip) !== 'boolean' ) && ( isGzip = false)
+                    if (Object.keys(this.imageObject).length > 0 ){
+                        this.setLoading(true)
+                        await window.favvyExportAPI(this.imageObject.src, isGzip , this.outputPath)
+                        this.setLoading(false)
+                    }
+                }
+
+                setLoading(isLoading){
+                    const overlayEl = document.querySelector('#overlay')
+                    isLoading ? overlay.classList.remove('hide') :  overlay.classList.add('hide') ;
+                }
+
+                checkImage(){
+                    const res = this.imageObject.resolution
+                    let proceed = false
+                    if (res.width === res.height){
+                        // show preview
+                        proceed = true
+                    }else {
+                        // show pop up box confirming if user wants to proceed
+                            // - May lead to distorted Image
+                    }
+
+                    this.showPreview()
+                    previewImageEl.classList.add('show')
+                    btnEl.classList.add('btn_favvy_active')
+                    frameEl.classList.add('hide')
+                }
+
+                showPreview(){
+                    const images = document.querySelectorAll('[data-preview-image]')
+                    images.forEach(image=>{
+                        image.src = this.imageObject.src
+                    })
+                }
+
+                setOutPutPath(path){
+                    this.outputPath = path
+                }
+
+                cancelExport(){
+                    this.imageObject = {}
+                    previewImageEl.classList.remove('show')
+                    btnEl.classList.remove('btn_favvy_active')
+                    frameEl.classList.remove('hide')
+                }
+            }
+
+
+            const favvyTool = new Favvy()
+            /*
+                evt listener for when user
+                    - selects image through the file manager
+                    - Drags and drops image to selection frame
+            */
+            imageFileEl.addEventListener('change', (e)=>{
+                let path=''
+                if (e.target.files.length > 0){
+                    const {path , type} = e.target.files[0]
+                    favvyTool.setImage(path)
+                }
+            })
+
+            directoryEl.addEventListener('change', (e)=>{
+                const files = e.target.files
+                if(files.length === 0 ) return
+                const tempPath = files[files.length-1].path
+                const path = tempPath.replace('desktop.ini' , '')
+                document.querySelector('#path_value').innerText=path
+                favvyTool.setOutPutPath(path)
+            })
+            /*
+                Btn to export the image
+            */
+            btnEl.addEventListener('click', ()=>{
+                favvyTool.exportFavicon(isGzipEl.checked)
+            })
+
+        </script>
+    </body>
+</html>
