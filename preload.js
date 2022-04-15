@@ -1,15 +1,8 @@
-const {contextBridge , ipcRenderer} = require('electron')
+const {contextBridge} = require('electron')
 const sharp = require('sharp')
 const path = require('path')
 const fs = require('fs')
 
-process.once('loaded' , ()=>{
-        window.addEventListener('message', e=>{
-                if(e.data.type === 'select-dirs'){
-                        ipcRenderer.send('select-dirs')
-                }
-        })
-})
 
 contextBridge.exposeInMainWorld("imageMetaDataAPI" , async(path) =>{
         const metadata = await sharp(path).metadata()

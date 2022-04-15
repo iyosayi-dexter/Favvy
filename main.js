@@ -13,9 +13,6 @@ const createWindow=()=>{
 
     mainWindow.loadFile('./src/templates/app.html')
 
-    mainWindow.on('closed' , ()=>{
-        mainWindow = null
-    })
 }
 
 app.whenReady().then(()=>{
