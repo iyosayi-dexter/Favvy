@@ -31,11 +31,10 @@ app.on('window-all-closed', ()=>{
 
 
 
-ipcMain.on('select-dir', (evt)=>{
+ipcMain.on('select-dir', async (evt)=>{
     let filePaths = []
-    dialog.showOpenDialog(mainWindow , {properties:['openDirectory']}).then(result =>{
+    await dialog.showOpenDialog(mainWindow , {properties:['openDirectory']}).then(result =>{
         filePaths = result.filePaths
-        console.log(filePaths)
     })
     evt.returnValue = filePaths
 })
