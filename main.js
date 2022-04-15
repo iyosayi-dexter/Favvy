@@ -1,9 +1,12 @@
-const { app , BrowserWindow } = require('electron')
+const { app , BrowserWindow , ipcMain } = require('electron');
+const { dialog } = require('electron/main');
 const path = require('path')
 
 
+let mainWindow;
+
 const createWindow=()=>{
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width:900,
         height:600,
         webPreferences: {
@@ -15,6 +18,8 @@ const createWindow=()=>{
 
 }
 
+app.disableHardwareAcceleration()
+
 app.whenReady().then(()=>{
     createWindow()
 })
@@ -24,3 +29,13 @@ app.on('window-all-closed', ()=>{
     if(process.platform !== 'darwin') app.quit()
 })
 
+
+
+ipcMain.on('select-dir', (evt)=>{
+    let filePaths = []
+    dialog.showOpenDialog(mainWindow , {properties:['openDirectory']}).then(result =>{
+        filePaths = result.filePaths
+        console.log(filePaths)
+    })
+    evt.returnValue = filePaths
+})

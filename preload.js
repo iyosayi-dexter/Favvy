@@ -1,8 +1,19 @@
-const {contextBridge} = require('electron')
+const {contextBridge, ipcRenderer} = require('electron')
 const sharp = require('sharp')
 const path = require('path')
 const fs = require('fs')
 
+
+
+window.addEventListener('DOMContentLoaded', ()=>{
+        window.addEventListener('message', evt => {
+                if (evt.data.type === 'select-dir') {
+                        let ipc= ipcRenderer.sendSync('select-dir')
+                        document.querySelector('#path_value').innerText = ipc[0]
+                }
+        })
+
+})
 
 contextBridge.exposeInMainWorld("imageMetaDataAPI" , async(path) =>{
         const metadata = await sharp(path).metadata()
@@ -15,7 +26,6 @@ contextBridge.exposeInMainWorld("favvyExportAPI", async (src , isGzip , output_p
         const sharpImgInst = sharp(src)
 
         const dir_name = path.join(output_path , 'favvy/')
-        console.log(dir_name)
 
         fs.mkdir(dir_name , (err)=>{
                 if(err){
