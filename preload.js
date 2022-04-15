@@ -8,7 +8,7 @@ const fs = require('fs')
 window.addEventListener('DOMContentLoaded', ()=>{
         window.addEventListener('message', evt => {
                 if (evt.data.type === 'select-dir') {
-                        let ipc= ipcRenderer.sendSync('select-dir')
+                        let ipc = ipcRenderer.sendSync('select-dir')
                         document.querySelector('#path_value').innerText = ipc[0]
                 }
         })
@@ -25,11 +25,13 @@ contextBridge.exposeInMainWorld("imageMetaDataAPI" , async(path) =>{
 contextBridge.exposeInMainWorld("favvyExportAPI", async (src , isGzip , output_path=null)=>{
         const sharpImgInst = sharp(src)
 
-        const dir_name = path.join(output_path , 'favvy/')
+        const dir_name = `favvy-desktop-${new Date().toISOString().replace('T' , '-').replaceAll(':' ,'-').slice(0,-5)}/`
+        const dir_path = path.join(output_path , dir_name)
 
-        fs.mkdir(dir_name , (err)=>{
+
+        fs.mkdir(dir_path , (err)=>{
                 if(err){
-                        console.error(err)
+                        console.log(err)
                 }
         })
 
@@ -67,6 +69,5 @@ contextBridge.exposeInMainWorld("favvyExportAPI", async (src , isGzip , output_p
                 },
         ]
 
-        // lopping through favicons and creating them based on data in array
-        favicons.forEach(favicon => sharpImgInst.resize({width:favicon.width , height:favicon.height}).png().toFile(dir_name+favicon.name))
+        favicons.forEach(favicon => sharpImgInst.resize({width:favicon.width , height:favicon.height}).png().toFile(dir_path+favicon.name))
 })
