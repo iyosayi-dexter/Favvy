@@ -4,7 +4,11 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Favvy - favicon exporter</title>
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'unsafe-inline'; style-src 'self' ; img-src 'self' "
+        />
+        <title>Favvy Desktop - favicon exporter</title>
         <link rel="stylesheet" href="../styles/app.css" />
     </head>
     <body>
@@ -67,11 +71,10 @@
                         None selected...
                     </div>
                 </div>
-                <div class="app_input_wrapper flex_row">
-                    <input type="checkbox" id="is_gzip" />
-                    <p>Export as Gzip ?</p>
+
+                <div class="app_export_btn_wrapper">
+                    <button id="export_btn">Export favicons</button>
                 </div>
-                <button id="export_btn">Export favicons</button>
             </section>
         </main>
         <script>
@@ -82,7 +85,6 @@
 
             const websiteNameEl = document.querySelector("#website_name");
             const themeColorEl = document.querySelector("#theme_color");
-            const isGzipEl = document.querySelector("#is_gzip");
             const btnEl = document.querySelector("#export_btn");
             const imageFileEl = document.querySelector("#image_file");
             const previewImageEl = document.querySelector("#preview");
@@ -111,7 +113,6 @@
                         this.setLoading(true);
                         await window.favvyExportAPI(
                             this.imageObject.src,
-                            isGzipEl.checked,
                             websiteNameEl.value,
                             themeColorEl.value,
                             this.outputPath
