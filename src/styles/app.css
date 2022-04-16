@@ -183,7 +183,10 @@ button {
     cursor:pointer;
     font-size:.7rem;
 }
-
+.app_export_btn_wrapper {
+    width:80%;
+    padding:1rem 0;
+}
 /*
     classes used to hide or show dom el
 */
