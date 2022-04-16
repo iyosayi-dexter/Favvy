@@ -111,7 +111,9 @@
                         this.setLoading(true);
                         await window.favvyExportAPI(
                             this.imageObject.src,
-                            isGzip,
+                            isGzipEl.checked,
+                            websiteNameEl.value,
+                            themeColorEl.value,
                             this.outputPath
                         );
                         this.setLoading(false);
@@ -181,7 +183,7 @@
                 Btn to export the image
             */
             btnEl.addEventListener("click", () => {
-                favvyTool.exportFavicon(isGzipEl.checked);
+                favvyTool.exportFavicon();
             });
 
             pathValueEl.addEventListener("click", () => {
