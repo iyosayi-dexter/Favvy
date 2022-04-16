@@ -9,10 +9,12 @@ window.addEventListener('DOMContentLoaded', ()=>{
         window.addEventListener('message', evt => {
                 if (evt.data.type === 'select-dir') {
                         let ipc = ipcRenderer.sendSync('select-dir')
-                        document.querySelector('#path_value').innerText = ipc[0]
+
+                        if(ipc.length > 0 ){
+                                document.querySelector('#path_value').innerText = ipc[0]
+                        }
                 }
         })
-
 })
 
 contextBridge.exposeInMainWorld("imageMetaDataAPI" , async(path) =>{
@@ -22,16 +24,81 @@ contextBridge.exposeInMainWorld("imageMetaDataAPI" , async(path) =>{
         return resolution
 })
 
-contextBridge.exposeInMainWorld("favvyExportAPI", async (src , isGzip , output_path=null)=>{
+contextBridge.exposeInMainWorld("favvyExportAPI", async (src , isGzip , website_name , theme_color,  output_path)=>{
         const sharpImgInst = sharp(src)
 
         const dir_name = `favvy-desktop-${new Date().toISOString().replace('T' , '-').replaceAll(':' ,'-').slice(0,-5)}/`
         const dir_path = path.join(output_path , dir_name)
 
-
         fs.mkdir(dir_path , (err)=>{
                 if(err){
-                        console.log(err)
+                        return
+                }
+        })
+
+        // creating the webmanifest file
+        let webmanifestContent = `{
+                "name": ${website_name},
+                "short_name": ${website_name},
+                "icons": [
+                {
+                        "src": "./android-chrome-192x192.png",
+                        "sizes": "192x192",
+                        "type": "image/png"
+                },
+                {
+                        "src": "./android-chrome-512x512.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                }
+                ],
+                "theme_color": ${theme_color},
+                "background_color": ${theme_color},
+                "display": "standalone"
+                }`
+
+        fs.writeFile(dir_path+'site.webmanifest' , webmanifestContent , (err)=>{
+                if(err){
+                        return
+                }
+        })
+
+        // creating the browserconfig file
+        let browserconfigContent = `
+                        <?xml version="1.0" encoding="utf-8"?>
+                                <browserconfig>
+                                        <msapplication>
+                                                <tile>
+                                                <square150x150logo src="/mstile-150x150.png"/>
+                                                <TileColor>${theme_color}</TileColor>
+                                                </tile>
+                                        </msapplication>
+                                </browserconfig>
+                        `
+        fs.writeFile(dir_path+'browserconfig.xml' , browserconfigContent , (err)=>{
+                if(err){
+                        return
+                }
+        })
+
+        /*
+                Creating the head.html file
+                - contains details of how link favicons in index.html
+        */
+        let headHtmlContent = `<head>
+                <!-- Created with favvy-desktop -->
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+                <link rel="manifest" href="/site.webmanifest">
+                <meta name="msapplication-config" content="/browserconfig.xml">
+                <meta name="msapplication-TileColor" content="${theme_color}">
+                <meta name="theme-color" content="${theme_color}">
+        </head>`
+
+        fs.writeFile(dir_path+"head.html" , headHtmlContent , (err)=>{
+                if(err){
+                        return
                 }
         })
 
