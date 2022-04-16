@@ -19,6 +19,7 @@ const createWindow=()=>{
 }
 
 app.disableHardwareAcceleration()
+app.enableSandbox()
 
 app.whenReady().then(()=>{
     createWindow()
