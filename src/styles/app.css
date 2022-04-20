@@ -64,7 +64,7 @@ html {
     align-items:center;
     border-radius:.1rem;
 }
-.app_config_wrapper input[type="text"]{
+.app_config_wrapper .form-field{
     outline:none;
     background:#f7f7f7;
     padding: 1rem .7rem;
@@ -72,7 +72,13 @@ html {
     border:none;
     border-radius:.3rem;
     font-family: "Poppins" , sans-serif;
-
+}
+.app_config_wrapper .field-error {
+    border:1px solid #eb4242;
+}
+.app_config_wrapper .field-error-message{
+    font-size:.85rem;
+    color:red;
 }
 .app_widget {
     flex:.35;

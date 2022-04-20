@@ -53,7 +53,11 @@
                         name="webiste_name"
                         placeholder="eg Metanyx"
                         id="website_name"
+                        class="form-field"
                     />
+                    <small class="field-error-message hide"
+                        >Website name is required
+                    </small>
                 </div>
                 <div class="app_input_wrapper">
                     <label for="theme_color">Theme color</label>
@@ -63,13 +67,20 @@
                         placeholder="eg #ffffff"
                         name="theme_color"
                         id="theme_color"
+                        class="form-field"
                     />
+                    <small class="field-error-message hide"
+                        >Theme color is required
+                    </small>
                 </div>
                 <div class="app_input_wrapper">
                     <label>Output Path</label>
                     <div id="path_value" class="app_directory_value">
                         None selected...
                     </div>
+                    <small class="field-error-message hide"
+                        >Output path is required
+                    </small>
                 </div>
 
                 <div class="app_export_btn_wrapper">
@@ -106,9 +117,48 @@
                     this.checkImage();
                 }
 
-                async exportFavicon(isGzip = false) {
+                showError(element) {
+                    element.classList.add("field-error");
+                    element.nextElementSibling.classList.remove("hide");
+                    return true;
+                }
+                hideError(element) {
+                    element.classList.remove("field-error");
+                    element.nextElementSibling.classList.add("hide");
+                }
+                async exportFavicon() {
                     await this.setOutPutPath();
-                    typeof isGzip !== "boolean" && (isGzip = false);
+
+                    /*
+                        validates the form , ensuring
+                            - websitename was not left empty
+                            - themecolor was not left empty
+                            - outputpath was not left null
+                    */
+                    const websiteNameElError =
+                        websiteNameEl.value.trim() === ""
+                            ? this.showError(websiteNameEl)
+                            : this.hideError(websiteNameEl);
+
+                    const themeColorElError =
+                        themeColorEl.value.trim() === ""
+                            ? this.showError(themeColorEl)
+                            : this.hideError(themeColorEl);
+
+                    const outputPathElError =
+                        this.outputPath === null ||
+                        this.outputPath === "None selected..."
+                            ? this.showError(pathValueEl)
+                            : this.hideError(pathValueEl);
+
+                    if (
+                        themeColorElError ||
+                        websiteNameElError ||
+                        outputPathElError
+                    ) {
+                        return;
+                    }
+
                     if (Object.keys(this.imageObject).length > 0) {
                         this.setLoading(true);
                         await window.favvyExportAPI(
