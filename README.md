@@ -1,6 +1,6 @@
 # Favvy - Favicon exporter
 
-*inspired by favvy ( a figma plugin for exporting favvy icons )*.
+*inspired by favvy ( a figma plugin for exporting favicons )*.
 
 ## Description
 
