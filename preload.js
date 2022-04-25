@@ -27,7 +27,7 @@ contextBridge.exposeInMainWorld("imageMetaDataAPI" , async(path) =>{
 contextBridge.exposeInMainWorld("favvyExportAPI", async (src , website_name , theme_color,  output_path)=>{
         const sharpImgInst = sharp(src)
 
-        const dir_name = `favvy-desktop-${new Date().toISOString().replace('T' , '-').replaceAll(':' ,'-').slice(0,-5)}/`
+        const dir_name = `favvy-desktop-${new Date().toISOString().replace('T' , '-').replaceAll(':' ,'').slice(0,-5)}/`
         const dir_path = path.join(output_path , dir_name)
 
         fs.mkdir(dir_path , (err)=>{
