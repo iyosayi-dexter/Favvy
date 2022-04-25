@@ -12,9 +12,16 @@
         <link rel="stylesheet" href="../styles/app.css" />
     </head>
     <body>
-        <div class="app_loading_overlay hide" id="overlay">
-            <div class="app_spinning_icon_wrapper">some icon</div>
+        <div class="app_modal_wrapper hide" id="modal">
+            <div class="app_done_modal">
+                <img src="../assets/modal_icon.png"/>
+                    <h1>Export complete</h1>
+                    <p>Thanks for using favvy</p>
+                    <button class="primary_btn btn_favvy_active" id="modal_close">Close</button>
+                </div>
+            </div>
         </div>
+
         <main class="app_wrapper">
             <section class="app_widget">
                 <div class="app_image_to_favvy_container" id="frame-container">
@@ -37,7 +44,7 @@
                         <img src="" data-preview-image />
                     </div>
                     <button
-                        class="app_favicion_preview_close"
+                        class="app_favicion_preview_close primary_btn center_btn"
                         onclick="favvyTool.cancelExport()"
                     >
                         Cancel
@@ -84,23 +91,26 @@
                 </div>
 
                 <div class="app_export_btn_wrapper">
-                    <button id="export_btn">Export favicons</button>
+                    <button id="export_btn" class="primary_btn center_btn">Export favicons</button>
                 </div>
             </section>
         </main>
         <script>
+
             /*
                 Selecting dom elements
                     these doms elements are the config of favyy icon exporer
             */
-
             const websiteNameEl = document.querySelector("#website_name");
             const themeColorEl = document.querySelector("#theme_color");
+
+
             const btnEl = document.querySelector("#export_btn");
             const imageFileEl = document.querySelector("#image_file");
             const previewImageEl = document.querySelector("#preview");
             const frameEl = document.querySelector("#frame-container");
             const pathValueEl = document.querySelector("#path_value");
+            const modalCloseBtn = document.querySelector("#modal_close")
 
             class Favvy {
                 constructor() {
@@ -160,22 +170,18 @@
                     }
 
                     if (Object.keys(this.imageObject).length > 0) {
-                        this.setLoading(true);
                         await window.favvyExportAPI(
                             this.imageObject.src,
                             websiteNameEl.value,
                             themeColorEl.value,
                             this.outputPath
                         );
-                        this.setLoading(false);
+                        this.showFinishModal()
                     }
                 }
 
-                setLoading(isLoading) {
-                    const overlayEl = document.querySelector("#overlay");
-                    isLoading
-                        ? overlay.classList.remove("hide")
-                        : overlay.classList.add("hide");
+                showFinishModal(){
+                    document.querySelector('#modal').classList.remove('hide')
                 }
 
                 checkImage() {
@@ -236,6 +242,10 @@
             btnEl.addEventListener("click", () => {
                 favvyTool.exportFavicon();
             });
+
+            modalCloseBtn.addEventListener("click" , ()=>{
+                document.querySelector('#modal').classList.add('hide')
+            })
 
             pathValueEl.addEventListener("click", () => {
                 window.postMessage({
