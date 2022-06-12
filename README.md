@@ -1,11 +1,25 @@
-# Favvy - Favicon exporter
+# Favvy-Desktop
+
+
 
 *inspired by favvy ( a figma plugin for exporting favicons )*.
 
 ## Description
 
-Favvy is a desktop app built with [Electron js](https://electronjs.org) , [Node js File system](https://nodejs.org/api/fs.html) and [Sharp](https://sharp.pixelplumbing.com/).
+![Favvy Desktop Logo](src/assets/logo.png "Favvy desktop Logo")
 
-## Functionality
+Favvy is a desktop that utilizes [Electron js](https://electronjs.org) , [Node js File system](https://nodejs.org/api/fs.html) and [Sharp](https://sharp.pixelplumbing.com/).
 
-Favvy-desktop allows you to create favicons from local images on your pc and store tehm in a specified output path, it relies on sharp , which has support from most image formats like Jpg , svg , png , webp e.t.c
+### Functionality
+
+Favvy-desktop allows you to create website metadata (site.webmanifest, favicon.png, browser-config.xml ), which are important for SEO, from an icon (square frame recomended to prevent distortion) and some other settings passed in.
+
+###  Running favvy desktop
+
+Clone the repo
+
+```bash
+cd favvy
+npm install
+npm start
+```
