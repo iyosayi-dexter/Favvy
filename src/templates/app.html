@@ -186,15 +186,6 @@
 
                 checkImage() {
                     const res = this.imageObject.resolution;
-                    let proceed = false;
-                    if (res.width === res.height) {
-                        // show preview
-                        proceed = true;
-                    } else {
-                        // show pop up box confirming if user wants to proceed
-                        // - May lead to distorted Image
-                    }
-
                     this.showPreview();
                     previewImageEl.classList.add("show");
                     btnEl.classList.add("btn_favvy_active");
